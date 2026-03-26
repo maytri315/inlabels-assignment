@@ -1,9 +1,8 @@
 import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
-  plugins: [svelte({ preprocess: vitePreprocess() })],
-  // This must match your GitHub repository name exactly
-  base: '/inlabels-assignment/',
+  plugins: [svelte()],
+  // Changing this to './' makes all paths relative to the current folder
+  base: './', 
 })
