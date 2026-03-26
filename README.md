@@ -1,101 +1,54 @@
-# Notes App
+706e579737107779f40398321683495f26941566497257929427181829375107
 
-A simple web application for managing notes, built with Svelte and TailwindCSS.
+# Notely OS
 
-## Features
+A high-performance, responsive fragments manager built with **Svelte**, **TypeScript**, and **TailwindCSS**.
 
-- View, create, update, and delete notes
-- Responsive design
-- Dark mode toggle
-- Search notes
-- Pagination with infinite scroll
-- Soft delete with undo
-- Offline support with localStorage
-- Keyboard shortcuts
-- Confirmation modals
-- Form validation
-- Loading indicators and skeletons
+## 🚀 Live Demo & Video
+- **Deployed App:** [https://maytri315.github.io/inlabels-assignment/](https://maytri315.github.io/inlabels-assignment/)
+- **Video Walkthrough:** [Link to your video]
 
-## Additional Feature
+## 🛠 Features Implemented
+- **Fully Responsive UI**: Optimized layout for both mobile and desktop users using TailwindCSS.
+- **Offline Sync & Optimistic UI**: Implements a `pendingOperations` queue in `localStorage` to store changes and automatically sync with the API upon reconnection.
+- **Soft Delete with Undo**: Deleted notes are hidden from the UI for a 10-second window, allowing users to revert the action via a toast notification before permanent API deletion.
+- **Infinite Scroll**: Dynamically loads 20 notes per page using `IntersectionObserver` to enhance browsing performance.
+- **Debounced Search**: Integrated a 300ms debounce on the search input to improve performance and reduce unnecessary API calls.
+- **Keyboard Shortcuts**: Includes power-user workflows such as `Esc` to close modals and `Ctrl+N` for new note focus.
+- **Dark Mode**: A toggleable theme using Tailwind's class strategy with persistent state saved in `localStorage`.
+- **Confirmation Modals**: Secure deletion process implemented via a reusable confirmation component.
+- **Form Validation**: Strict validation ensures required fields are populated and character limits (100 for titles, 500 for content) are respected.
+- **Loading Indicators**: Includes animated skeletons and spinners for all asynchronous data fetching and operations.
 
-Pinning notes: Users can pin important notes to keep them at the top of the list.
+## 💡 Additional Feature: Note Pinning & Spatial Persistence
+I implemented **Note Pinning** as the primary additional feature.
+* **Functional Benefit**: Users can pin important fragments to the top of the list, ensuring high-priority information is always visible regardless of the creation date.
+* **Spatial Organization**: The app separates "flow" notes from "positioned" notes, allowing fragments to be anchored to specific spatial coordinates (x, y).
+* **Why**: This transforms the app from a simple list into a digital "AR-style" workspace, catering to non-linear thinkers who organize information visually.
 
-## Tech Stack
+## ⚙️ Setup & Run
+1. **Clone the repository**: `git clone https://github.com/maytri315/inlabels-assignment.git`
+2. **Install dependencies**: `npm install`
+3. **Configure API**: Update the `API_BASE` in `src/lib/api.ts` with your [mockapi.io](https://mockapi.io) endpoint.
+4. **Development**: `npm run dev`
+5. **Build**: `npm run build`
+6. **Preview**: `npm run preview`
 
-- Svelte
-- TypeScript
-- TailwindCSS
-- Fetch API
+## 🧠 Approach & Reflection
+My approach centered on creating a modular Svelte architecture where notes and forms are decoupled into separate files for better maintainability. I prioritized an **Optimistic UI** strategy; for instance, when a note is pinned or updated, the local store reflects the change immediately while the `Fetch API` syncs the data in the background.
 
-## Setup
+## ⚖️ Trade-offs & Assumptions
+* **Storage**: Used `localStorage` for the offline queue due to simplicity; however, `IndexedDB` would be a more robust choice for production-scale data.
+* **Sorting**: The app defaults to "Newest First" but overrides this logic for pinned notes to maintain priority visibility.
+* **Environment**: Assumed modern browser support for `IntersectionObserver` and the `Fetch API`.
 
-1. Clone the repository
-2. Run `npm install`
-3. Create a project on [mockapi.io](https://mockapi.io) and update the API_BASE in `src/lib/api.ts`
-4. Run `npm run dev` for development
-5. Run `npm run build` for production build
-6. Run `npm run preview` to preview the build
+## 📦 Dependencies
+- `svelte`: ^4.2.18
+- `typescript`: For strict typing and preventing implicit `any`.
+- `tailwindcss`: For rapid, responsive styling.
+- `gh-pages`: For seamless deployment.
 
-## Deployment
-
-Deploy to GitHub Pages:
-
-1. Run `npm run build`
-2. Run `npm run deploy`
-
-Or deploy to Vercel, Netlify, etc.
-
-## API
-
-Uses mockapi.io for CRUD operations on notes.
-
-Endpoint: `GET/POST/PUT/DELETE /notes`
-
-Note structure:
-```json
-{
-  "id": 1,
-  "title": "Note Title",
-  "content": "Note content",
-  "createdAt": "2023-01-01T00:00:00.000Z",
-  "pinned": false
-}
-```
-
-## Approach
-
-I approached this by first setting up the project with Svelte, TypeScript, and TailwindCSS. Then implemented the core CRUD operations with optimistic UI and localStorage for offline support. Added UX features like dark mode, search, pagination, and soft deletes. Ensured responsive design and accessibility.
-
-## Trade-offs
-
-- Used localStorage for simplicity, but for production, a more robust storage like IndexedDB would be better.
-- Infinite scroll instead of traditional pagination for better UX, but may not be ideal for large datasets.
-- Soft delete with 10-second undo, adjustable.
-
-## Assumptions
-
-- Users have modern browsers with ES6 support.
-- mockapi.io is used as specified.
-
-## Dependencies
-
-- svelte: ^4.2.18
-- tailwindcss: latest
-- autoprefixer: latest
-- postcss: latest
-- gh-pages: for deployment
-
-## What I'd do with more time
-
-- Add tests with Vitest
-- Implement proper routing for 404 page
-- Add more animations
-- Improve accessibility
-- Add categories or tags for notes
-- Implement real-time sync with WebSockets
-
-SHA-256 hash of GitHub username: placeholder
-
-Deployed at: https://yourusername.github.io/notes-app/
-
-Video: [Link to video]
+## ⏳ What I'd do with more time
+- Implement unit and integration testing with Vitest.
+- Add advanced tagging and category systems for note organization.
+- Develop real-time synchronization using WebSockets for multi-device coordination.
