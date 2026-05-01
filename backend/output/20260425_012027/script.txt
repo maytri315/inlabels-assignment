@@ -1,0 +1,19 @@
+News Minute. Timestamp: 25 Apr 2026, 01:20 AM.
+We cross-checked incoming headlines with external sources before speaking.
+Story 1: Around 95% students clear Sanskrit Council Class X, XII exams - The Times of India
+Verdict: LIKELY_FAKE with confidence 0.10 and Truth Score 10/100 based on 0 supporting sources.
+Reason: No corroborating coverage from indexed sources.
+This headline is all confidence, no evidence. Truth mode wins.
+Story 2: Class X girl ends life over fear of failure, secures 63% - The Times of India
+Verdict: LIKELY_FAKE with confidence 0.10 and Truth Score 10/100 based on 0 supporting sources.
+Reason: No corroborating coverage from indexed sources.
+This headline is all confidence, no evidence. Truth mode wins.
+Story 3: To boost connectivity for locals, service lanes to come along Kisan Path - The Times of India
+Verdict: LIKELY_FAKE with confidence 0.10 and Truth Score 10/100 based on 0 supporting sources.
+Reason: No corroborating coverage from indexed sources.
+This headline is all confidence, no evidence. Truth mode wins.
+Story 4: Tight coordination key to railway safety: UP DGP - The Times of India
+Verdict: LIKELY_FAKE with confidence 0.10 and Truth Score 10/100 based on 0 supporting sources.
+Reason: No corroborating coverage from indexed sources.
+This headline is all confidence, no evidence. Truth mode wins.
+Truth over virality. Verify before you amplify.

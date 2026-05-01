@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mockr Feed</title>
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-1: #050816;
+        --bg-2: #0d1b2f;
+        --ink: #f4f7ff;
+        --muted: rgba(244, 247, 255, 0.72);
+        --accent: #2fd083;
+        --accent-2: #7dd3fc;
+        --panel: rgba(7, 12, 20, 0.72);
+        --glass: rgba(255, 255, 255, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Space Grotesk", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 10% 10%, rgba(47, 208, 131, 0.16), transparent 32%),
+          radial-gradient(circle at 85% 15%, rgba(125, 211, 252, 0.14), transparent 28%),
+          linear-gradient(160deg, var(--bg-1), var(--bg-2));
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.06), transparent 18%);
+      }
+
+      #root { height: 100%; }
+
+      .app {
+        position: relative;
+        max-width: 460px;
+        height: 100vh;
+        margin: 0 auto;
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.18);
+      }
+
+      .topbar {
+        position: absolute;
+        inset: 0 0 auto 0;
+        z-index: 20;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 12px 10px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .title {
+        margin: 0;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 32px;
+        line-height: 1;
+        letter-spacing: 1px;
+      }
+
+      .subtitle {
+        margin: 0;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 9px 13px;
+        font-weight: 700;
+        cursor: pointer;
+        color: #03120b;
+        background: var(--accent);
+      }
+
+      button.ghost { background: rgba(255, 255, 255, 0.94); }
+
+      button.next-reel {
+        position: absolute;
+        right: 14px;
+        bottom: 16px;
+        z-index: 25;
+        padding: 13px 16px;
+        color: #03120b;
+        background: linear-gradient(135deg, rgba(47, 208, 131, 0.98), rgba(125, 211, 252, 0.92));
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .feed {
+        position: relative;
+        z-index: 1;
+        height: 100vh;
+        overflow-y: auto;
+        scroll-snap-type: y mandatory;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .reel {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        scroll-snap-align: start;
+        background: #000;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .reel video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background: #000;
+      }
+
+      .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 20px 16px 24px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2) 42%, rgba(0, 0, 0, 0.16));
+      }
+
+      .caption {
+        padding: 16px 14px 14px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(4, 7, 15, 0.24), rgba(4, 7, 15, 0.76));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(10px);
+        animation: rise 360ms ease both;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 5px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .verified { background: rgba(47, 208, 131, 0.2); color: #6af4b5; }
+      .uncertain { background: rgba(255, 159, 67, 0.2); color: #ffd08b; }
+      .likely_fake { background: rgba(255, 95, 86, 0.22); color: #ff9f9a; }
+      .no_data { background: rgba(255, 255, 255, 0.12); color: #e7ecff; }
+
+      .score {
+        margin: 10px 0 6px;
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      .headline {
+        margin: 0 0 10px;
+        font-size: 19px;
+        line-height: 1.35;
+        max-width: 92%;
+      }
+
+      .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .meta-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .empty-wrap {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 28px;
+        text-align: center;
+      }
+
+      .empty-card {
+        max-width: 280px;
+        padding: 18px 16px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+      }
+
+      .empty-title {
+        margin: 0 0 6px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 28px;
+        letter-spacing: 0.08em;
+      }
+
+      .empty {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script>
+      const { useEffect, useRef, useState } = React;
+
+      function App() {
+        const [items, setItems] = useState([]);
+        const [loading, setLoading] = useState(false);
+        const [soundEnabled, setSoundEnabled] = useState(false);
+        const feedRef = useRef(null);
+        const videosRef = useRef([]);
+        const generationRef = useRef(null);
+        const api = "/api";
+
+        function scrollToLatest() {
+          const feed = feedRef.current;
+          if (!feed) return;
+          requestAnimationFrame(() => {
+            feed.scrollTop = feed.scrollHeight;
+          });
+        }
+
+        async function loadFeed(options = {}) {
+          const { silent = false, scrollToLatest: shouldScrollToLatest = false } = options;
+          if (!silent) setLoading(true);
+          try {
+            const res = await fetch(api + "/feed?limit=25");
+            const json = await res.json();
+            setItems(json.items || []);
+            if (shouldScrollToLatest) scrollToLatest();
+          } finally {
+            if (!silent) setLoading(false);
+          }
+        }
+
+        async function generateReel(options = {}) {
+          const { interactive = false, scrollToLatest: shouldScrollToLatest = true } = options;
+
+          if (generationRef.current) return generationRef.current;
+
+          const job = (async () => {
+            if (interactive) setLoading(true);
+            try {
+              await fetch(api + "/run", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ roast_style: "savage" }),
+              });
+              await loadFeed({ silent: true, scrollToLatest: shouldScrollToLatest });
+            } finally {
+              if (interactive) setLoading(false);
+              generationRef.current = null;
+            }
+          })();
+
+          generationRef.current = job;
+          return job;
+        }
+
+        async function runCycle() {
+          await generateReel({ interactive: true, scrollToLatest: true });
+        }
+
+        async function nextReel() {
+          await generateReel({ interactive: true, scrollToLatest: true });
+        }
+
+        useEffect(() => {
+          loadFeed({ silent: false, scrollToLatest: true });
+        }, []);
+
+        useEffect(() => {
+          if (!items.length) return;
+
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                const video = entry.target;
+                video.muted = !soundEnabled;
+                if (entry.isIntersecting && entry.intersectionRatio > 0.65) {
+                  video.play().catch(() => {});
+                } else {
+                  video.pause();
+                }
+              });
+            },
+            { threshold: [0.65] }
+          );
+
+          videosRef.current.forEach((video) => {
+            if (video) {
+              video.muted = !soundEnabled;
+              observer.observe(video);
+            }
+          });
+
+          return () => observer.disconnect();
+        }, [items, soundEnabled]);
+
+        function toggleSound() {
+          setSoundEnabled((current) => !current);
+          videosRef.current.forEach((video) => {
+            if (video) {
+              video.muted = soundEnabled;
+              if (!soundEnabled) video.play().catch(() => {});
+            }
+          });
+        }
+
+        return React.createElement(
+          "main",
+          { className: "app" },
+          React.createElement(
+            "div",
+            { className: "topbar" },
+            React.createElement(
+              "div",
+              { className: "brand" },
+              React.createElement("h1", { className: "title" }, "MOCKR REELS"),
+              React.createElement("p", { className: "subtitle" }, "Swipe for the next roast")
+            ),
+            React.createElement(
+              "div",
+              { className: "controls" },
+              React.createElement("button", { className: "ghost", onClick: toggleSound, disabled: loading }, soundEnabled ? "Sound On" : "Sound Off"),
+              React.createElement("button", { onClick: runCycle, disabled: loading }, loading ? "Running..." : "Run"),
+              React.createElement("button", { className: "ghost", onClick: loadFeed, disabled: loading }, "Refresh")
+            )
+          ),
+          React.createElement("button", { className: "next-reel", onClick: nextReel, disabled: loading }, loading ? "Generating..." : "New Reel"),
+          items.length === 0
+            ? React.createElement(
+                "div",
+                { className: "empty-wrap" },
+                React.createElement(
+                  "div",
+                  { className: "empty-card" },
+                  React.createElement("p", { className: "empty-title" }, "Empty Queue"),
+                  React.createElement("p", { className: "empty" }, "Tap Generate Reel to build the first story card, then use Next Reel to keep moving.")
+                )
+              )
+            : React.createElement(
+                "section",
+                { className: "feed", ref: feedRef },
+                items.map((it, idx) =>
+                  React.createElement(
+                    "article",
+                    { key: it.run_id || idx, className: "reel" },
+                    it.video_url
+                      ? React.createElement("video", {
+                          ref: (el) => (videosRef.current[idx] = el),
+                          src: it.video_url,
+                          playsInline: true,
+                          muted: !soundEnabled,
+                          loop: true,
+                          preload: "metadata",
+                        })
+                      : null,
+                    React.createElement(
+                      "div",
+                      { className: "overlay" },
+                      React.createElement(
+                        "div",
+                        { className: "caption" },
+                        React.createElement("span", { className: "tag " + (it.top_verdict || "no_data") }, (it.top_verdict || "NO_DATA").toUpperCase()),
+                        React.createElement("div", { className: "score" }, "Truth Score: " + (it.top_truth_score || 0) + "/100"),
+                        React.createElement("p", { className: "headline" }, it.headline || "No headline"),
+                        React.createElement(
+                          "div",
+                          { className: "meta-row" },
+                          React.createElement("span", { className: "meta-chip" }, "Evidence: " + (it.evidence_count || 0)),
+                          React.createElement("span", { className: "meta-chip" }, "Run: " + it.run_id)
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+    </script>
+  </body>
+</html>
