@@ -1,8 +1,13 @@
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = BASE_DIR.parent
+load_dotenv()
+# At the bottom of the file
+
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-secret-key")
 DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
@@ -56,3 +61,7 @@ import sys
 src_path = str(REPO_ROOT / "src")
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
+
+
+
+SERPER_API_KEY = os.getenv("SERPER_API_KEY")

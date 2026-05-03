@@ -17,3 +17,4 @@ gtts
 edge-tts
 requests
 elevenlabs
+melotts @ git+https://github.com/myshell-ai/MeloTTS.git

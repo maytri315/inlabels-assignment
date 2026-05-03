@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import math
 import textwrap
 from pathlib import Path
@@ -14,6 +15,8 @@ from moviepy.editor import (
     ImageClip,
     concatenate_videoclips,
 )
+
+logger = logging.getLogger(__name__)
 
 
 if not hasattr(Image, "ANTIALIAS"):
@@ -87,14 +90,35 @@ def _vignette_overlay(duration: float) -> ImageClip:
 
 def _slideshow_layer(image_assets: List[Path], duration: float) -> ImageClip:
     if not image_assets:
+        logger.warning("⚠⚠⚠ No image assets provided, using dark background ⚠⚠⚠")
         return _dark_bg_clip(duration)
 
-    each = max(3.0, duration / max(1, len(image_assets)))
+    # Convert all paths to absolute for reliable loading
+    absolute_assets = [Path(asset).resolve() for asset in image_assets]
+    
+    # Log asset info
+    logger.info(f"_slideshow_layer: Loading {len(absolute_assets)} image assets for slideshow (duration={duration:.1f}s)")
+    for idx, asset in enumerate(absolute_assets, 1):
+        exists = asset.exists()
+        size_bytes = asset.stat().st_size if exists else 0
+        logger.info(f"  Asset #{idx}: {asset.name} (exists={exists}, size={size_bytes} bytes, path={asset})")
+
+    each = max(3.0, duration / max(1, len(absolute_assets)))
+    logger.info(f"  Each image duration: {each:.2f}s")
+    
     clips = []
-    for asset in image_assets:
+    
+    for idx, asset in enumerate(absolute_assets, 1):
         try:
+            abs_path = str(asset.resolve())
+            if not asset.exists():
+                logger.error(f"  ✗ Image asset #{idx} does not exist: {abs_path}")
+                clips.append(_dark_bg_clip(each))
+                continue
+                
+            logger.debug(f"  Loading image asset #{idx}: {abs_path}")
             base = (
-                ImageClip(str(asset))
+                ImageClip(abs_path)
                 .resize(height=H)
                 .set_position("center")
                 .set_duration(each)
@@ -102,10 +126,19 @@ def _slideshow_layer(image_assets: List[Path], duration: float) -> ImageClip:
             )
             dim = ColorClip(size=(W, H), color=(0, 0, 0)).set_opacity(0.42).set_duration(each)
             clips.append(CompositeVideoClip([base, dim]).set_duration(each))
-        except Exception:
+            logger.info(f"  ✓ Successfully loaded image asset #{idx}: {asset.name}")
+        except Exception as e:
+            logger.error(f"  ✗ Failed to load image asset #{idx} ({asset.name}): {type(e).__name__}: {e}")
             clips.append(_dark_bg_clip(each))
 
-    return concatenate_videoclips(clips, method="compose").set_duration(duration)
+    if not clips:
+        logger.warning("  ⚠⚠⚠ No image clips loaded, using dark background ⚠⚠⚠")
+        return _dark_bg_clip(duration)
+    
+    logger.info(f"  Compositing {len(clips)} image clips into slideshow")
+    result = concatenate_videoclips(clips, method="compose").set_duration(duration)
+    logger.info(f"  ✓ Slideshow layer ready")
+    return result
 
 
 def _text_image(
@@ -447,10 +480,14 @@ def render_news_video(
     temp_audio = out_path.parent / f"{out_path.stem}.temp-audio.m4a"
 
     audio_clip = AudioFileClip(str(audio_path))
-    duration = max(10, int(audio_clip.duration) + 1)
+    # Base duration on audio length but clamp to 2-3 minutes (120-180s)
+    raw_duration = max(1, int(audio_clip.duration) + 1)
+    duration = min(max(raw_duration, 120), 180)
 
     verdict = top_verdict or "uncertain"
     score = int(max(0, min(100, top_truth_score)))
+
+    logger.info(f"Rendering video: {len(image_assets or [])} image assets, duration={duration:.1f}s, verdict={verdict}, score={score}")
 
     try:
         bg = _slideshow_layer(image_assets or [], duration=duration)

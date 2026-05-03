@@ -26,6 +26,8 @@ class Settings:
     pollinations_base_url: str
     elevenlabs_api_key: str
     elevenlabs_voice_id: str
+    hf_api_key: str
+    hf_image_model: str
 
 
 
@@ -50,4 +52,6 @@ def load_settings() -> Settings:
         pollinations_base_url=os.getenv("POLLINATIONS_BASE_URL", "https://image.pollinations.ai"),
         elevenlabs_api_key=os.getenv("ELEVENLABS_API_KEY", ""),
         elevenlabs_voice_id=os.getenv("ELEVENLABS_VOICE_ID", ""),
+        hf_api_key=os.getenv("HF_API_KEY", ""),
+        hf_image_model=os.getenv("HF_IMAGE_MODEL", "stabilityai/stable-diffusion-xl-base-1.0"),
     )

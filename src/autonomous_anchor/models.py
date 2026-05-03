@@ -12,6 +12,7 @@ class RawStory:
     link: str
     source: str
     published_at: datetime
+    category: str = "general"  # general, entertainment, tech, political, sports, business, science
 
 
 @dataclass
@@ -32,6 +33,9 @@ class StoryVerdict:
     roast_line: str = ""
     truth_score: int = 0
     evidence: List[CrossCheckEvidence] = field(default_factory=list)
+    confidence_level: str = "medium"  # low, medium, high
+    red_flags: List[str] = field(default_factory=list)  # e.g., ["unverified_source", "criminal_record", "no_evidence"]
+    fuzzy_score: float = 0.0  # detailed fuzzy logic score
 
 
 @dataclass
@@ -56,6 +60,10 @@ class FeedCard:
     top_truth_score: int
     headline: str
     evidence_count: int
+    top_category: str = "general"
+    top_confidence_level: str = "medium"
+    top_red_flags: List[str] = field(default_factory=list)
+    personalization_bucket: str = ""
 
     def as_dict(self) -> Dict[str, Any]:
         return {
@@ -68,4 +76,8 @@ class FeedCard:
             "top_truth_score": self.top_truth_score,
             "headline": self.headline,
             "evidence_count": self.evidence_count,
+            "top_category": self.top_category,
+            "top_confidence_level": self.top_confidence_level,
+            "top_red_flags": self.top_red_flags,
+            "personalization_bucket": self.personalization_bucket,
         }

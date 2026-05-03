@@ -1,440 +1,1140 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mockr Feed</title>
-    <link rel="icon" href="data:," />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
-    <style>
-      :root {
-        --bg-1: #050816;
-        --bg-2: #0d1b2f;
-        --ink: #f4f7ff;
-        --muted: rgba(244, 247, 255, 0.72);
-        --accent: #2fd083;
-        --accent-2: #7dd3fc;
-        --panel: rgba(7, 12, 20, 0.72);
-        --glass: rgba(255, 255, 255, 0.08);
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockr • Reel Phone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05070a;
+      --surface: rgba(12, 16, 22, 0.86);
+      --surface-strong: rgba(16, 20, 28, 0.96);
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #eef3f8;
+      --muted: #a6b2c2;
+      --accent: #8bff61;
+      --accent-2: #ffbf4d;
+      --danger: #ff5f6d;
+      --shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
+    }
 
-      * { box-sizing: border-box; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
 
-      html, body {
-        margin: 0;
-        height: 100%;
-        overflow: hidden;
-        font-family: "Space Grotesk", sans-serif;
-        color: var(--ink);
-        background:
-          radial-gradient(circle at 10% 10%, rgba(47, 208, 131, 0.16), transparent 32%),
-          radial-gradient(circle at 85% 15%, rgba(125, 211, 252, 0.14), transparent 28%),
-          linear-gradient(160deg, var(--bg-1), var(--bg-2));
-      }
+    body {
+      font-family: Inter, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(139, 255, 97, 0.18), transparent 24%),
+        radial-gradient(circle at 85% 16%, rgba(255, 191, 77, 0.13), transparent 22%),
+        linear-gradient(145deg, #040507 0%, #0a0d12 55%, #07090c 100%);
+      overflow-x: hidden;
+    }
 
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.06), transparent 18%);
-      }
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
 
-      #root { height: 100%; }
+    .phone {
+      width: min(430px, 100%);
+      height: min(92vh, 920px);
+      border-radius: 38px;
+      background: linear-gradient(180deg, rgba(12, 15, 20, 0.98), rgba(6, 8, 11, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
 
-      .app {
-        position: relative;
-        max-width: 460px;
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 136px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .phone-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      padding: 18px 14px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: linear-gradient(180deg, rgba(5, 7, 10, 0.9), rgba(5, 7, 10, 0));
+      padding-top: 18px;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+    }
+
+    .subbrand {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn,
+    .floating-btn,
+    .pill-btn,
+    .chip,
+    .action-btn,
+    .tab-btn {
+      border: none;
+      cursor: pointer;
+      font: inherit;
+      transition: transform 0.16s ease, opacity 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+
+    .icon-btn.active {
+      background: rgba(139, 255, 97, 0.18);
+      color: #efffe6;
+      border-color: rgba(139, 255, 97, 0.35);
+    }
+
+    .icon-btn:hover,
+    .floating-btn:hover,
+    .pill-btn:hover,
+    .chip:hover,
+    .action-btn:hover,
+    .tab-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .phone-body {
+      height: 100%;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      scrollbar-width: none;
+    }
+
+    .phone-body::-webkit-scrollbar { display: none; }
+
+    .reel-page {
+      position: relative;
+      min-height: 100%;
+      height: 100%;
+      scroll-snap-align: start;
+      background: #000;
+    }
+
+    .reel-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+
+    .reel-gradient {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 96px 14px 16px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5) 26%, rgba(0, 0, 0, 0.94) 100%);
+      z-index: 2;
+    }
+
+    .reel-topline {
+      position: absolute;
+      top: 66px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      z-index: 3;
+    }
+
+    .live-pill,
+    .small-pill,
+    .status-pill,
+    .meta-pill,
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: rgba(7, 10, 14, 0.52);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      backdrop-filter: blur(14px);
+    }
+
+    .status-pill {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .status-pill.busy {
+      color: #091107;
+      background: linear-gradient(135deg, #8bff61, #d5ff7d);
+    }
+
+    .reel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .headline {
+      font-size: 18px;
+      line-height: 1.38;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .description {
+      color: rgba(237, 242, 248, 0.82);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .chip-row,
+    .meta-row,
+    .footer-row,
+    .action-row,
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .chip.active {
+      background: rgba(139, 255, 97, 0.18);
+      color: #efffe6;
+      border-color: rgba(139, 255, 97, 0.35);
+    }
+
+    .meta-pill.verified { background: rgba(139, 255, 97, 0.16); color: #efffe6; }
+    .meta-pill.uncertain { background: rgba(255, 191, 77, 0.16); color: #fff1cb; }
+    .meta-pill.likely_fake { background: rgba(255, 95, 109, 0.16); color: #ffd7db; }
+    .meta-pill.unknown { color: var(--muted); }
+
+    .score {
+      font-weight: 800;
+      color: #dfffd2;
+      font-size: 14px;
+    }
+
+    .score strong { color: var(--accent); }
+
+    .reel-footer {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .progress {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-bar {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+      overflow: hidden;
+    }
+
+    .progress-bar span {
+      display: block;
+      width: 32%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: sweep 1.3s linear infinite;
+    }
+
+    @keyframes sweep {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(420%); }
+    }
+
+    .floating-stack {
+      position: absolute;
+      right: 14px;
+      bottom: 148px;
+      z-index: 4;
+      display: grid;
+      gap: 10px;
+      justify-items: end;
+    }
+
+    .floating-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      background: rgba(5, 7, 10, 0.72);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+    }
+
+    .footer-toolbar {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 12px;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .footer-toolbar .status-mini {
+      min-width: 0;
+      flex: 1;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .empty-view {
+      display: grid;
+      place-items: center;
+      height: 100%;
+      padding: 110px 24px 24px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+      background: linear-gradient(180deg, rgba(12, 16, 22, 0.96), rgba(3, 4, 6, 0.98));
+    }
+
+    .sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      z-index: 20;
+      display: none;
+    }
+
+    .sheet-backdrop.open { display: block; }
+
+    .sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 25;
+      border-radius: 28px 28px 0 0;
+      background: linear-gradient(180deg, rgba(14, 18, 25, 0.98), rgba(8, 10, 14, 0.99));
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.45);
+      transform: translateY(102%);
+      transition: transform 0.22s ease;
+      max-height: 88%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sheet.open { transform: translateY(0); }
+
+    .sheet-handle {
+      width: 52px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 10px auto 0;
+    }
+
+    .sheet-head {
+      padding: 14px 16px 10px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .sheet-head h2 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      letter-spacing: -0.02em;
+      font-size: 20px;
+    }
+
+    .sheet-head p,
+    .sheet-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .sheet-content {
+      padding: 14px 16px 16px;
+      overflow-y: auto;
+    }
+
+    .sheet-block {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .sheet-block h3 {
+      margin: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #f1f5fa;
+    }
+
+    .sheet-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .action-btn,
+    .pill-btn,
+    .tab-btn {
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .action-btn.primary,
+    .pill-btn.primary {
+      background: linear-gradient(135deg, #8bff61, #d8ff7d);
+      color: #091107;
+    }
+
+    .action-btn.secondary,
+    .pill-btn.secondary,
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .action-btn.danger {
+      background: rgba(255, 95, 109, 0.14);
+      color: #ffd7db;
+      border: 1px solid rgba(255, 95, 109, 0.2);
+    }
+
+    .fact-input {
+      width: 100%;
+      min-height: 118px;
+      resize: vertical;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font: inherit;
+      line-height: 1.6;
+      outline: none;
+    }
+
+    .fact-input:focus {
+      border-color: rgba(139, 255, 97, 0.35);
+      box-shadow: 0 0 0 4px rgba(139, 255, 97, 0.08);
+    }
+
+    .fact-result {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .fact-score {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .fact-score strong { color: var(--accent); }
+
+    .source-card {
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: grid;
+      gap: 6px;
+    }
+
+    .source-card a {
+      color: #d8ff7d;
+      text-decoration: none;
+      word-break: break-word;
+    }
+
+    .source-card a:hover { text-decoration: underline; }
+
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-grid .chip {
+      padding: 8px 11px;
+      font-size: 12px;
+    }
+
+    .loading-line {
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      display: none;
+    }
+
+    .loading-line.busy { display: block; }
+
+    .loading-line::after {
+      content: "";
+      display: block;
+      width: 32%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: sweep 1.15s linear infinite;
+    }
+
+    .reel-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(139, 255, 97, 0.4);
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(139, 255, 97, 0.35); }
+      70% { box-shadow: 0 0 0 12px rgba(139, 255, 97, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(139, 255, 97, 0); }
+    }
+
+    @keyframes sweep {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(420%); }
+    }
+
+    @media (max-width: 520px) {
+      .app-shell { padding: 0; }
+      .phone {
+        width: 100vw;
         height: 100vh;
-        margin: 0 auto;
-        border-left: 1px solid rgba(255, 255, 255, 0.08);
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
-        overflow: hidden;
-        background: rgba(0, 0, 0, 0.18);
+        border-radius: 0;
       }
 
-      .topbar {
-        position: absolute;
-        inset: 0 0 auto 0;
-        z-index: 20;
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 14px 12px 10px;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
+      .phone::before { display: none; }
+      .sheet { border-radius: 22px 22px 0 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="phone">
+      <div class="phone-header">
+        <div class="brand-block">
+          <div class="brand">MOCKR</div>
+          <div class="subbrand" id="activeModeText">Personalized reel phone</div>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="muteButton" type="button" title="Mute audio">🔇</button>
+          <button class="icon-btn" id="settingsButton" type="button" title="Settings">⚙</button>
+        </div>
+      </div>
+
+      <div class="phone-body" id="feed"></div>
+
+      <div class="floating-stack">
+        <button class="floating-btn" id="factCheckOpenButton" type="button" title="Text fact checker">?</button>
+      </div>
+
+      <div class="footer-toolbar">
+        <div class="status-mini" id="statusText">Loading reels and personalization...</div>
+        <div class="small-pill" id="feedCountPill">0 reels</div>
+      </div>
+
+      <div class="sheet-backdrop" id="sheetBackdrop"></div>
+
+      <div class="sheet" id="settingsSheet" aria-hidden="true">
+        <div class="sheet-handle"></div>
+        <div class="sheet-head">
+          <div>
+            <h2>Personalization</h2>
+            <p>Select one or more categories, then save to generate reels from those categories automatically.</p>
+          </div>
+          <button class="icon-btn" id="closeSettingsButton" type="button">×</button>
+        </div>
+        <div class="sheet-content">
+          <div class="sheet-block">
+            <h3>Categories</h3>
+            <div class="pill-grid" id="categoryChips"></div>
+          </div>
+          <div class="sheet-block">
+            <h3>How it works</h3>
+            <p class="sheet-copy">Mockr follows the 3-pillar logic: evidence, narrative, and historical context. It builds the reel, saves it under the selected bucket, then shows the finished reel immediately.</p>
+            <div class="chip-row">
+              <span class="chip">1. Collect</span>
+              <span class="chip">2. Verify</span>
+              <span class="chip">3. Render</span>
+            </div>
+          </div>
+          <div class="sheet-block">
+            <div class="loading-line" id="settingsLoading"></div>
+            <div class="sheet-actions">
+              <button class="action-btn primary" id="saveGenerateButton" type="button">Save & Generate</button>
+              <button class="action-btn secondary" id="refreshFeedButton" type="button">Refresh feed</button>
+              <button class="action-btn danger" id="resetSelectionButton" type="button">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet" id="factSheet" aria-hidden="true">
+        <div class="sheet-handle"></div>
+        <div class="sheet-head">
+          <div>
+            <h2>Text Fact Checker</h2>
+            <p>Paste any claim and get a verdict with proof from the cross-platform checkers.</p>
+          </div>
+          <button class="icon-btn" id="closeFactButton" type="button">×</button>
+        </div>
+        <div class="sheet-content">
+          <div class="sheet-block">
+            <h3>Text to check</h3>
+            <textarea class="fact-input" id="factInput" placeholder="Paste the claim, message, or paragraph you want checked..."></textarea>
+            <div class="sheet-actions">
+              <button class="action-btn primary" id="checkTextButton" type="button">Check text</button>
+              <button class="action-btn secondary" id="fillExampleButton" type="button">Load example</button>
+            </div>
+          </div>
+
+          <div class="sheet-block">
+            <div class="fact-result" id="factResult">
+              <div class="status-pill">Waiting for input</div>
+              <div class="sheet-copy">The result will show verdict, truth score, explanation, and proof sources.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = `${window.location.origin}/api`;
+    const SESSION_KEY = "mockr_session_id";
+
+    const state = {
+      sessionId: null,
+      categories: [],
+      selectedCategories: [],
+      preferences: null,
+      isMuted: true,
+      isGenerating: false,
+      isFactChecking: false,
+      feedItems: [],
+      observer: null,
+      activeVideos: new Set()
+    };
+
+    const labels = {
+      general: "General",
+      entertainment: "Entertainment",
+      tech: "Technology",
+      technology: "Technology",
+      political: "Political",
+      sports: "Sports",
+      business: "Business",
+      science: "Science"
+    };
+
+    function getSessionId() {
+      const saved = localStorage.getItem(SESSION_KEY);
+      if (saved) return saved;
+      const generated = (window.crypto && window.crypto.randomUUID)
+        ? window.crypto.randomUUID()
+        : `session_${Date.now()}_${Math.random().toString(16).slice(2, 10)}`;
+      localStorage.setItem(SESSION_KEY, generated);
+      return generated;
+    }
+
+    function labelForCategory(value) {
+      const key = String(value || "general").toLowerCase();
+      return labels[key] || key.replace(/_/g, " ").replace(/\b\w/g, (match) => match.toUpperCase());
+    }
+
+    function normalizeCategories(values) {
+      const seen = new Set();
+      return (values || [])
+        .map((value) => String(value || "").trim().toLowerCase())
+        .filter((value) => value && !seen.has(value) && seen.add(value));
+    }
+
+    function buildUrl(path) {
+      return `${API_BASE}${path}`;
+    }
+
+    async function requestJson(path, options = {}) {
+      const response = await fetch(buildUrl(path), {
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        },
+        ...options
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
       }
 
-      .brand {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
+      return response.json();
+    }
 
-      .title {
-        margin: 0;
-        font-family: "Bebas Neue", sans-serif;
-        font-size: 32px;
-        line-height: 1;
-        letter-spacing: 1px;
-      }
+    function setStatus(message, busy = false) {
+      document.getElementById("statusText").textContent = message;
+      const loading = document.getElementById("settingsLoading");
+      loading.classList.toggle("busy", busy);
+      document.getElementById("activeModeText").textContent = state.selectedCategories.length
+        ? `${state.selectedCategories.length} personalized categorie${state.selectedCategories.length === 1 ? "" : "s"}`
+        : "General reel feed";
+    }
 
-      .subtitle {
-        margin: 0;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-      }
+    function setSheetOpen(sheetId, open) {
+      const sheet = document.getElementById(sheetId);
+      const backdrop = document.getElementById("sheetBackdrop");
+      sheet.classList.toggle("open", open);
+      backdrop.classList.toggle("open", open);
+      sheet.setAttribute("aria-hidden", open ? "false" : "true");
+    }
 
-      .controls {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 8px;
-      }
+    function updateMuteButton() {
+      const button = document.getElementById("muteButton");
+      button.textContent = state.isMuted ? "🔇" : "🔊";
+      button.classList.toggle("active", !state.isMuted);
+    }
 
-      button {
-        border: 0;
-        border-radius: 999px;
-        padding: 9px 13px;
-        font-weight: 700;
-        cursor: pointer;
-        color: #03120b;
-        background: var(--accent);
-      }
-
-      button.ghost { background: rgba(255, 255, 255, 0.94); }
-
-      button.next-reel {
-        position: absolute;
-        right: 14px;
-        bottom: 16px;
-        z-index: 25;
-        padding: 13px 16px;
-        color: #03120b;
-        background: linear-gradient(135deg, rgba(47, 208, 131, 0.98), rgba(125, 211, 252, 0.92));
-        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
-      }
-
-      button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-
-      .feed {
-        position: relative;
-        z-index: 1;
-        height: 100vh;
-        overflow-y: auto;
-        scroll-snap-type: y mandatory;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .reel {
-        position: relative;
-        width: 100%;
-        height: 100vh;
-        scroll-snap-align: start;
-        background: #000;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      }
-
-      .reel video {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        background: #000;
-      }
-
-      .overlay {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 20px 16px 24px;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2) 42%, rgba(0, 0, 0, 0.16));
-      }
-
-      .caption {
-        padding: 16px 14px 14px;
-        border-radius: 22px;
-        background: linear-gradient(180deg, rgba(4, 7, 15, 0.24), rgba(4, 7, 15, 0.76));
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
-        backdrop-filter: blur(10px);
-        animation: rise 360ms ease both;
-      }
-
-      .tag {
-        display: inline-block;
-        padding: 5px 8px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-      }
-
-      .verified { background: rgba(47, 208, 131, 0.2); color: #6af4b5; }
-      .uncertain { background: rgba(255, 159, 67, 0.2); color: #ffd08b; }
-      .likely_fake { background: rgba(255, 95, 86, 0.22); color: #ff9f9a; }
-      .no_data { background: rgba(255, 255, 255, 0.12); color: #e7ecff; }
-
-      .score {
-        margin: 10px 0 6px;
-        font-size: 17px;
-        font-weight: 700;
-      }
-
-      .headline {
-        margin: 0 0 10px;
-        font-size: 19px;
-        line-height: 1.35;
-        max-width: 92%;
-      }
-
-      .meta-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .meta-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 7px 10px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(12px);
-        font-size: 12px;
-        font-weight: 700;
-      }
-
-      .empty-wrap {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 28px;
-        text-align: center;
-      }
-
-      .empty-card {
-        max-width: 280px;
-        padding: 18px 16px;
-        border-radius: 22px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(14px);
-      }
-
-      .empty-title {
-        margin: 0 0 6px;
-        font-family: "Bebas Neue", sans-serif;
-        font-size: 28px;
-        letter-spacing: 0.08em;
-      }
-
-      .empty {
-        margin: 0;
-        color: var(--muted);
-      }
-
-      @keyframes rise {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script>
-      const { useEffect, useRef, useState } = React;
-
-      function App() {
-        const [items, setItems] = useState([]);
-        const [loading, setLoading] = useState(false);
-        const [soundEnabled, setSoundEnabled] = useState(false);
-        const feedRef = useRef(null);
-        const videosRef = useRef([]);
-        const generationRef = useRef(null);
-        const api = "/api";
-
-        function scrollToLatest() {
-          const feed = feedRef.current;
-          if (!feed) return;
-          requestAnimationFrame(() => {
-            feed.scrollTop = feed.scrollHeight;
-          });
+    function applyMuteState() {
+      document.querySelectorAll("video").forEach((video) => {
+        video.muted = state.isMuted;
+        if (!video.paused && !state.isMuted) {
+          video.play().catch(() => {});
         }
+      });
+      updateMuteButton();
+    }
 
-        async function loadFeed(options = {}) {
-          const { silent = false, scrollToLatest: shouldScrollToLatest = false } = options;
-          if (!silent) setLoading(true);
-          try {
-            const res = await fetch(api + "/feed?limit=25");
-            const json = await res.json();
-            setItems(json.items || []);
-            if (shouldScrollToLatest) scrollToLatest();
-          } finally {
-            if (!silent) setLoading(false);
+    function createChip(category, selected) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `chip ${selected ? "active" : ""}`;
+      button.textContent = labelForCategory(category);
+      button.dataset.category = category;
+      button.addEventListener("click", () => {
+        const next = new Set(state.selectedCategories);
+        if (next.has(category)) {
+          next.delete(category);
+        } else {
+          next.add(category);
+        }
+        state.selectedCategories = normalizeCategories(Array.from(next));
+        renderCategoryChips();
+      });
+      return button;
+    }
+
+    function renderCategoryChips() {
+      const holder = document.getElementById("categoryChips");
+      holder.innerHTML = "";
+      state.categories.forEach((category) => {
+        holder.appendChild(createChip(category, state.selectedCategories.includes(category)));
+      });
+    }
+
+    function groupedFeed(items) {
+      const groups = new Map();
+      items.forEach((item) => {
+        const key = item.personalization_bucket || item.top_category || "general";
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(item);
+      });
+      return groups;
+    }
+
+    function renderFeed(items) {
+      const feed = document.getElementById("feed");
+      feed.innerHTML = "";
+
+      if (!items.length) {
+        feed.innerHTML = `
+          <div class="reel-page">
+            <div class="empty-view">
+              <div>
+                <div class="live-pill">No reels yet</div>
+                <p style="margin-top:14px;">Open settings, choose one or more categories, and save to generate a personalized reel from those categories.</p>
+              </div>
+            </div>
+          </div>
+        `;
+        document.getElementById("feedCountPill").textContent = "0 reels";
+        return;
+      }
+
+      const groups = groupedFeed(items);
+      const ordered = Array.from(groups.keys()).sort((a, b) => {
+        const left = groups.get(a)[0]?.created_at || "";
+        const right = groups.get(b)[0]?.created_at || "";
+        return right.localeCompare(left);
+      });
+
+      ordered.forEach((key) => {
+        groups.get(key).forEach((item, index) => {
+          const page = document.createElement("section");
+          page.className = "reel-page";
+          const videoUrl = item.video_url || item.video_path || "";
+          const verdict = String(item.top_verdict || "unknown");
+
+          page.innerHTML = `
+            ${videoUrl ? `<video class="reel-video" muted playsinline loop preload="metadata" ${index === 0 ? "autoplay" : ""}>
+              <source src="${videoUrl}" type="video/mp4">
+            </video>` : `<div class="empty-view"><div><div class="live-pill">Video missing</div><p style="margin-top:12px;">This reel does not have an attached video file.</p></div></div>`}
+            <div class="reel-topline">
+              <div class="live-pill"><span class="reel-status-dot"></span> LIVE REEL</div>
+              <div class="small-pill">${labelForCategory(item.personalization_bucket || key || "general")}</div>
+            </div>
+            <div class="floating-stack">
+              
+              <button class="floating-btn" type="button" data-action="fact" title="Fact check text">?</button>
+            </div>
+            <div class="reel-gradient">
+              <div class="reel-body">
+                <div class="meta-row">
+                  <span class="meta-pill ${verdict}">${verdict.replace(/_/g, " ")}</span>
+                  <span class="meta-pill unknown">${labelForCategory(item.top_category || key || "general")}</span>
+                  <span class="meta-pill unknown">${item.top_confidence_level || "medium"} confidence</span>
+                </div>
+                <div class="headline">${item.headline || "No headline available"}</div>
+                <div class="description">Selected categories feed the reel engine automatically. This item was generated under ${labelForCategory(item.personalization_bucket || key || "general")} and appears in the matching bucket after save.</div>
+                <div class="footer-row">
+                  <span class="score">Truth score <strong>${item.top_truth_score || 0}</strong>/100</span>
+                  <span class="meta-pill unknown">Evidence: ${item.evidence_count || 0}</span>
+                  <span class="meta-pill unknown">Run: ${item.run_id || "pending"}</span>
+                </div>
+                <div class="footer-row">
+                  <span class="tag-pill">Bucket: ${labelForCategory(item.personalization_bucket || key || "general")}</span>
+                  <span class="tag-pill">Category: ${labelForCategory(item.top_category || key || "general")}</span>
+                </div>
+              </div>
+            </div>
+          `;
+
+          feed.appendChild(page);
+        });
+      });
+
+      document.getElementById("feedCountPill").textContent = `${items.length} reel${items.length === 1 ? "" : "s"}`;
+      attachVideoObserver();
+      applyMuteState();
+    }
+
+    function attachVideoObserver() {
+      if (state.observer) {
+        state.observer.disconnect();
+      }
+
+      state.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.65) {
+            if (!state.activeVideos.has(video)) {
+              state.activeVideos.add(video);
+            }
+            video.play().catch(() => {});
+          } else {
+            state.activeVideos.delete(video);
+            video.pause();
           }
-        }
+        });
+      }, { threshold: [0.2, 0.45, 0.65, 0.9] });
 
-        async function generateReel(options = {}) {
-          const { interactive = false, scrollToLatest: shouldScrollToLatest = true } = options;
+      document.querySelectorAll("video.reel-video").forEach((video) => {
+        video.muted = state.isMuted;
+        state.observer.observe(video);
+      });
+    }
 
-          if (generationRef.current) return generationRef.current;
+    async function loadCategories() {
+      const data = await requestJson("/categories");
+      state.categories = Object.keys(data.categories || {});
+      if (!state.categories.length) {
+        state.categories = ["general", "entertainment", "tech", "political", "sports", "business", "science"];
+      }
+      renderCategoryChips();
+    }
 
-          const job = (async () => {
-            if (interactive) setLoading(true);
-            try {
-              await fetch(api + "/run", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ roast_style: "savage" }),
-              });
-              await loadFeed({ silent: true, scrollToLatest: shouldScrollToLatest });
-            } finally {
-              if (interactive) setLoading(false);
-              generationRef.current = null;
-            }
-          })();
+    async function loadPreferences() {
+      const data = await requestJson(`/preferences?session_id=${encodeURIComponent(state.sessionId)}`);
+      state.preferences = data;
+      state.selectedCategories = Array.isArray(data.preferred_categories)
+        ? normalizeCategories(data.preferred_categories)
+        : normalizeCategories(state.categories);
+      renderCategoryChips();
+    }
 
-          generationRef.current = job;
-          return job;
-        }
+    async function savePreferences() {
+      return requestJson("/preferences", {
+        method: "POST",
+        body: JSON.stringify({
+          session_id: state.sessionId,
+          preferred_categories: state.selectedCategories
+        })
+      });
+    }
 
-        async function runCycle() {
-          await generateReel({ interactive: true, scrollToLatest: true });
-        }
+    function feedUrl() {
+      const params = new URLSearchParams();
+      params.set("limit", "24");
+      params.set("session_id", state.sessionId);
+      params.set("personalized", state.selectedCategories.length ? "1" : "0");
+      if (state.selectedCategories.length) {
+        params.set("categories", state.selectedCategories.join(","));
+      }
+      params.set("base", window.location.origin);
+      return `/feed?${params.toString()}`;
+    }
 
-        async function nextReel() {
-          await generateReel({ interactive: true, scrollToLatest: true });
-        }
+    async function loadFeed() {
+      setStatus("Loading reels...", true);
+      const response = await fetch(buildUrl(feedUrl()));
+      if (!response.ok) {
+        throw new Error("Feed request failed");
+      }
+      const data = await response.json();
+      state.feedItems = Array.isArray(data.items) ? data.items : [];
+      renderFeed(state.feedItems);
+      setStatus(state.feedItems.length ? "Reel feed ready." : "No reels matched yet.", false);
+    }
 
-        useEffect(() => {
-          loadFeed({ silent: false, scrollToLatest: true });
-        }, []);
+    function setBusy(isBusy, message) {
+      state.isGenerating = isBusy;
+      document.getElementById("settingsLoading").classList.toggle("busy", isBusy);
+      document.getElementById("saveGenerateButton").disabled = isBusy;
+      document.getElementById("refreshFeedButton").disabled = isBusy;
+      document.getElementById("resetSelectionButton").disabled = isBusy;
+      setStatus(message, isBusy);
+    }
 
-        useEffect(() => {
-          if (!items.length) return;
+    async function saveAndGenerate() {
+      try {
+        setBusy(true, "Saving selection and generating a matched reel...");
+        await savePreferences();
 
-          const observer = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                const video = entry.target;
-                video.muted = !soundEnabled;
-                if (entry.isIntersecting && entry.intersectionRatio > 0.65) {
-                  video.play().catch(() => {});
-                } else {
-                  video.pause();
-                }
-              });
-            },
-            { threshold: [0.65] }
-          );
+        const categoriesToGenerate = state.selectedCategories.length
+          ? state.selectedCategories
+          : ["general"];
 
-          videosRef.current.forEach((video) => {
-            if (video) {
-              video.muted = !soundEnabled;
-              observer.observe(video);
-            }
+        for (const category of categoriesToGenerate) {
+          await requestJson("/run", {
+            method: "POST",
+            body: JSON.stringify({
+              session_id: state.sessionId,
+              roast_style: "measured",
+              preferred_categories: [category],
+              force_bucket: category
+            })
           });
-
-          return () => observer.disconnect();
-        }, [items, soundEnabled]);
-
-        function toggleSound() {
-          setSoundEnabled((current) => !current);
-          videosRef.current.forEach((video) => {
-            if (video) {
-              video.muted = soundEnabled;
-              if (!soundEnabled) video.play().catch(() => {});
-            }
-          });
         }
 
-        return React.createElement(
-          "main",
-          { className: "app" },
-          React.createElement(
-            "div",
-            { className: "topbar" },
-            React.createElement(
-              "div",
-              { className: "brand" },
-              React.createElement("h1", { className: "title" }, "MOCKR REELS"),
-              React.createElement("p", { className: "subtitle" }, "Swipe for the next roast")
-            ),
-            React.createElement(
-              "div",
-              { className: "controls" },
-              React.createElement("button", { className: "ghost", onClick: toggleSound, disabled: loading }, soundEnabled ? "Sound On" : "Sound Off"),
-              React.createElement("button", { onClick: runCycle, disabled: loading }, loading ? "Running..." : "Run"),
-              React.createElement("button", { className: "ghost", onClick: loadFeed, disabled: loading }, "Refresh")
-            )
-          ),
-          React.createElement("button", { className: "next-reel", onClick: nextReel, disabled: loading }, loading ? "Generating..." : "New Reel"),
-          items.length === 0
-            ? React.createElement(
-                "div",
-                { className: "empty-wrap" },
-                React.createElement(
-                  "div",
-                  { className: "empty-card" },
-                  React.createElement("p", { className: "empty-title" }, "Empty Queue"),
-                  React.createElement("p", { className: "empty" }, "Tap Generate Reel to build the first story card, then use Next Reel to keep moving.")
-                )
-              )
-            : React.createElement(
-                "section",
-                { className: "feed", ref: feedRef },
-                items.map((it, idx) =>
-                  React.createElement(
-                    "article",
-                    { key: it.run_id || idx, className: "reel" },
-                    it.video_url
-                      ? React.createElement("video", {
-                          ref: (el) => (videosRef.current[idx] = el),
-                          src: it.video_url,
-                          playsInline: true,
-                          muted: !soundEnabled,
-                          loop: true,
-                          preload: "metadata",
-                        })
-                      : null,
-                    React.createElement(
-                      "div",
-                      { className: "overlay" },
-                      React.createElement(
-                        "div",
-                        { className: "caption" },
-                        React.createElement("span", { className: "tag " + (it.top_verdict || "no_data") }, (it.top_verdict || "NO_DATA").toUpperCase()),
-                        React.createElement("div", { className: "score" }, "Truth Score: " + (it.top_truth_score || 0) + "/100"),
-                        React.createElement("p", { className: "headline" }, it.headline || "No headline"),
-                        React.createElement(
-                          "div",
-                          { className: "meta-row" },
-                          React.createElement("span", { className: "meta-chip" }, "Evidence: " + (it.evidence_count || 0)),
-                          React.createElement("span", { className: "meta-chip" }, "Run: " + it.run_id)
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-        );
+        await loadFeed();
+        setSheetOpen("settingsSheet", false);
+      } catch (error) {
+        console.error(error);
+        setStatus("Generation failed. Check your API keys or backend logs.", false);
+      } finally {
+        setBusy(false, "Ready.");
+      }
+    }
+
+    function resetSelection() {
+      state.selectedCategories = [];
+      renderCategoryChips();
+      savePreferences().catch(() => {});
+      loadFeed().catch((error) => console.error(error));
+    }
+
+    async function checkText() {
+      const text = document.getElementById("factInput").value.trim();
+      const result = document.getElementById("factResult");
+
+      if (!text) {
+        result.innerHTML = `<div class="status-pill">Enter text first</div><div class="sheet-copy">Paste a claim or paragraph to get a verdict and proof.</div>`;
+        return;
       }
 
-      ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
-    </script>
-  </body>
+      try {
+        state.isFactChecking = true;
+        result.innerHTML = `<div class="status-pill busy">Checking text...</div><div class="loading-line busy"></div>`;
+        const data = await requestJson("/text-check", {
+          method: "POST",
+          body: JSON.stringify({ text })
+        });
+
+        const verdictClass = data.verdict || "unknown";
+        const sources = Array.isArray(data.sources) ? data.sources : [];
+
+        result.innerHTML = `
+          <div class="meta-row">
+            <span class="meta-pill ${verdictClass}">${(data.verdict || "no_data").replace(/_/g, " ")}</span>
+            <span class="meta-pill unknown">Truth score: ${data.truth_score ?? 0}/100</span>
+            <span class="meta-pill unknown">Confidence: ${data.confidence_level || "low"}</span>
+          </div>
+          <div class="fact-score"><strong>${data.fake_likelihood ?? 0}%</strong> fake likelihood</div>
+          <div class="sheet-copy">${data.reason || "No reason returned."}</div>
+          <div class="sheet-copy"><strong>Headline:</strong> ${data.headline || "Unknown"}</div>
+          <div class="sheet-copy"><strong>Red flags:</strong> ${(data.red_flags || []).length ? data.red_flags.join(", ") : "None"}</div>
+          <div class="sheet-copy"><strong>Evidence sources:</strong> ${data.evidence_count ?? sources.length ?? 0}</div>
+          <div class="source-row">${sources.map((source) => `
+            <div class="source-card">
+              <div class="sheet-copy"><strong>${source.title || "Source"}</strong></div>
+              <div class="sheet-copy">${source.snippet || "No snippet available."}</div>
+              <a href="${source.link || "#"}" target="_blank" rel="noreferrer">${source.source || source.link || "Open source"}</a>
+            </div>
+          `).join("")}</div>
+        `;
+      } catch (error) {
+        console.error(error);
+        result.innerHTML = `<div class="status-pill">Fact check failed</div><div class="sheet-copy">The API did not return a result. Try again after confirming the backend is running.</div>`;
+      } finally {
+        state.isFactChecking = false;
+      }
+    }
+
+    async function initialize() {
+      state.sessionId = getSessionId();
+      await loadCategories();
+      await loadPreferences();
+      await loadFeed();
+      updateMuteButton();
+      setStatus("Ready.", false);
+    }
+
+    document.getElementById("muteButton").addEventListener("click", () => {
+      state.isMuted = !state.isMuted;
+      applyMuteState();
+    });
+
+    document.getElementById("settingsButton").addEventListener("click", () => setSheetOpen("settingsSheet", true));
+    document.getElementById("closeSettingsButton").addEventListener("click", () => setSheetOpen("settingsSheet", false));
+    document.getElementById("sheetBackdrop").addEventListener("click", () => {
+      setSheetOpen("settingsSheet", false);
+      setSheetOpen("factSheet", false);
+    });
+    document.getElementById("saveGenerateButton").addEventListener("click", saveAndGenerate);
+    document.getElementById("refreshFeedButton").addEventListener("click", () => loadFeed().catch((error) => console.error(error)));
+    document.getElementById("resetSelectionButton").addEventListener("click", resetSelection);
+
+    document.getElementById("factCheckOpenButton").addEventListener("click", () => setSheetOpen("factSheet", true));
+    document.getElementById("closeFactButton").addEventListener("click", () => setSheetOpen("factSheet", false));
+    document.getElementById("checkTextButton").addEventListener("click", checkText);
+    document.getElementById("fillExampleButton").addEventListener("click", () => {
+      document.getElementById("factInput").value = "Lucknow local authorities confirmed the new bypass road will open next week after finishing final inspections.";
+    });
+
+    document.getElementById("feed").addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (target.dataset.action === "mute") {
+        state.isMuted = !state.isMuted;
+        applyMuteState();
+      }
+      if (target.dataset.action === "settings") {
+        setSheetOpen("settingsSheet", true);
+      }
+      if (target.dataset.action === "fact") {
+        setSheetOpen("factSheet", true);
+      }
+    });
+
+    initialize().catch((error) => {
+      console.error(error);
+      setStatus("Failed to initialize the reel phone.", false);
+      document.getElementById("feed").innerHTML = `
+        <div class="reel-page">
+          <div class="empty-view">
+            <div>
+              <div class="live-pill">Startup error</div>
+              <p style="margin-top:14px;">The frontend could not load categories or reels from the API. Check the Django backend and reload the page.</p>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  </script>
+</body>
 </html>

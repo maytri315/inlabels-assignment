@@ -15,6 +15,10 @@ class BrainConfig:
     roast_style: str
 
 
+class BrainState(dict):
+    pass
+
+
 def _fallback_reasoning(verdict: StoryVerdict, style: str) -> Dict[str, Any]:
     truth_score = int(max(1, min(100, round(verdict.score * 100))))
     if verdict.verdict == "verified":
@@ -64,9 +68,6 @@ def reason_about_verdict(verdict: StoryVerdict, cfg: BrainConfig) -> Dict[str, A
         f"Style: {cfg.roast_style}\n"
         f"Evidence:\n{evidence_blob if evidence_blob else '- none'}"
     )
-
-    class BrainState(dict):
-        pass
 
     def _is_rate_limited(error: Exception) -> bool:
         if isinstance(error, RateLimitError):
